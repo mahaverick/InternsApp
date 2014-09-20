@@ -4,14 +4,50 @@
 |--------------------------------------------------------------------------
 | Application Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the Closure to execute when that URI is requested.
-|
 */
 
-Route::get('/', function()
-{
-	return View::make('index');
+Route::get('/', function() {
+	return View::make('pages.index');
+});
+
+/*
+|--------------------------------------------------------------------------
+| students Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::group(array('prefix' => 'students', 'before' => 'authCheckStudents'), function() {
+
+	Route::get('login', function() {
+		return View::make('pages.students.login');
+	});
+
+	Route::post('login', 'StudentsController@login');
+
+	Route::get('signup', function() {
+		return View::make('pages.students.signup');
+	});
+
+	Route::post('signup', 'StudentsController@signup');
+});
+
+/*
+|--------------------------------------------------------------------------
+| employers Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::group(array('prefix' => 'employers', 'before' => 'authCheckEmployers'), function() {
+
+	Route::get('login', function() {
+		return View::make('pages.employers.login');
+	});
+
+	Route::post('login', 'EmployersController@login');
+
+	Route::get('signup', function() {
+		return View::make('pages.employers.signup');
+	});
+
+	Route::post('signup', 'EmployersController@signup');
 });
