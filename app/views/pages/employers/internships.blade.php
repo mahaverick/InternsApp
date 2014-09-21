@@ -11,7 +11,7 @@ Employers : @parent
 @section('content')
 <div id="login-signup-form">
 
-    <form action="login" method="post">
+    <form action="internships" method="post">
         <fieldset class="clearfix">
 
             <p><span class=""></span><input type="text" name="title" placeholder="Title" required></p>

@@ -41,4 +41,13 @@ class StudentsController extends BaseController {
             return Redirect::to('/');
         }
     }
+
+    public static function applyForAnInternship($id) {
+        $check = Internships::applyForAnInternship($id);
+        if($check) {
+            return Redirect::to('students')->withErrors(array("msg" => "successfully applied for an Internship"));
+        } else {
+            return Redirect::to('students')->withErrors(array("msg" => "Sorry! something went wrong. Not applied for an Internship."));
+        }
+    }
 }

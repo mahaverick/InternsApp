@@ -45,6 +45,10 @@ class EmployersController extends BaseController {
     public static function addInternship() {
         $input = Input::all();
         $post = Employers::addInternship($input);
-        print_r($post);
+        if($post) {
+            return Redirect::to('employers')->withErrors(array("msg" => "new Internship Post added successfully!"));
+        } else {
+            return Redirect::to('employers')->withErrors(array("msg" => "we are sorry. Internship Post not added successfully!"));
+        }
     }
 }

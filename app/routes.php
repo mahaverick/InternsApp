@@ -10,6 +10,12 @@ Route::get('/', function() {
 	return View::make('pages.index');
 });
 
+Route::get('internships/{id}', 'StudentsController@getSingleInternship');
+
+Route::get('internships/{id}', function ($id) {
+	return View::make('pages.singleInternship', array('id' => $id));
+});
+
 /*
 |--------------------------------------------------------------------------
 | students Routes
@@ -18,13 +24,13 @@ Route::get('/', function() {
 
 Route::filter('authCheckStudents', function() {
 	if (Session::has('sid')) {}
-	elseif (Session::has('eid')) {
-		return Redirect::to('employers');
-	}
-	else {
-		return Redirect::to('/');
-	}
-});
+		elseif (Session::has('eid')) {
+			return Redirect::to('employers');
+		}
+		else {
+			return Redirect::to('/');
+		}
+	});
 
 Route::filter('alreadyLoggedIn', function(){
 	if(Session::has('sid')) {
@@ -56,6 +62,8 @@ Route::group(array('prefix' => '/students', 'before' => 'authCheckStudents'), fu
 	Route::get('', function() {
 		return View::make('pages.students.students');
 	});
+
+	Route::post('internships/apply/{id}', 'StudentsController@applyForAnInternship');
 });
 
 /*
@@ -66,13 +74,13 @@ Route::group(array('prefix' => '/students', 'before' => 'authCheckStudents'), fu
 
 Route::filter('authCheckEmployers', function() {
 	if (Session::has('eid')) {}
-	elseif (Session::has('sid')) {
-		return Redirect::to('students');
-	}
-	else {
-		return Redirect::to('/');
-	}
-});
+		elseif (Session::has('sid')) {
+			return Redirect::to('students');
+		}
+		else {
+			return Redirect::to('/');
+		}
+	});
 
 Route::group(array('prefix' => '/employers', 'before' => 'alreadyLoggedIn'), function() {
 	Route::get('login', function() {
@@ -89,12 +97,6 @@ Route::group(array('prefix' => '/employers', 'before' => 'alreadyLoggedIn'), fun
 });
 
 Route::group(array('prefix' => '/employers', 'before' => 'authCheckEmployers'), function() {
-
-	Route::filter('employerAlreadyLoggedIn', function(){
-		if(Session::has('eid')) {
-			return Redirect::to('employers');
-		}
-	});
 
 	Route::get('logout', 'EmployersController@logout');
 

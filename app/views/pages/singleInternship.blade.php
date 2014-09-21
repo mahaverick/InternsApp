@@ -6,13 +6,26 @@
 @section('header')
 <?php if(Session::has('eid')) {
 	$details=Employers::getEmployersDetails(Session::get('eid'));
+	$countOfStudents = Internships::getCountOfStudentsAppliedToInternship($id);
+	if($countOfStudents) {
+		$appliedStudents = Internships::getStudentsAppliedToInternship($id);
+	}
+	$buttonValue = "";
 	$tempText = '| <a href="/employers">'.$details['name'].'</a> | <a href="employers/logout">Logout</a>';
 } elseif(Session::has('sid')) {
 	$details=Students::getStudentsDetails(Session::get('sid'));
+	$appliedPost = Internships::getSingleAppliedInternship($id);
+	if($appliedPost) {
+		$buttonValue = '<input disabled value="Applied">';
+	}
+	else {
+		$buttonValue = '<input type="submit" value="Apply">';
+	}
 	$tempText = '| <a href="/students">'.$details['name'].'</a> | <a href="students/logout">Logout</a>';
 } else {
+	$buttonValue = "";
 	$tempText = '| <a href="/students/login">Student Login</a> | <a href="employers/login">Employer Login</a>';
-}?>
+} ?>
 @parent <?php echo $tempText;?>
 @stop
 @section('sidebar')
@@ -22,21 +35,31 @@
 @stop
 
 @section('content')
-<?php $posts = Internships::getAllInternships(); ?>
+<?php $post = Internships::getSingleInternship($id); ?>
 
 <div>
 	<ul class="timeline">
-		<?php foreach ($posts as $post) { if($post){ ?>
+		<?php if($post){ ?>
 		<li>
 			<div class="bubble-container">
 				<div class="bubble">
-					<h3><?php echo $post['title']; ?></h3> at <h3>@<?php echo $post['company']; ?></h3> <a href="internships/<?php echo $post['id'];?>"><button>Details</button></a>
+					<h3><?php echo $post['title']; ?></h3> at <h3>@<?php echo $post['company']; ?></h3>
+					<form action="/students/internships/apply/<?php echo $post['id']; ?>" method="post" ><?php echo $buttonValue; ?></form>
 					<h4>For the Post of <?php echo $post['forThePost']; ?> </h4> Company : <em> <?php echo $post['company']; ?> </em>
 					| more info about it: <?php echo $post['moreInfo']; ?>
 				</div>
 			</div>
 		</li>
-		<?php } } ?>
+		<?php } ?>
 	</ul>
-</div>
-@stop
+	<?php if(Session::has('eid') && $countOfStudents) { ?>
+		<ul class="studentList timeline">
+			<h3>List of Applied Students</h3>
+			<?php foreach ($appliedStudents as $student) { if($student) {?>
+			<li>
+				Name : <?php echo $student['name']; ?> Email : <?php echo $student['email']; ?>
+			</li>
+			<?php }  } }?>
+		</ul>
+	</div>
+	@stop

@@ -78,15 +78,19 @@ class Employers extends Eloquent implements UserInterface, RemindableInterface {
 		$timestamp = $date->getTimestamp();
 		$id = uniqid();
 		$post->setProperty('id', $id)
-			->setProperty('title', $input['title'])
-			->setProperty('forThePost', $input['forThePost'])
-			->setProperty('moreInfo', $input['moreInfo'])
-			->setProperty('company', $employer['company'])
-			->setProperty('timestamp', $timestamp)
-			->save();
+		->setProperty('title', $input['title'])
+		->setProperty('forThePost', $input['forThePost'])
+		->setProperty('moreInfo', $input['moreInfo'])
+		->setProperty('company', $employer['company'])
+		->setProperty('timestamp', $timestamp)
+		->save();
 		$label = Neo4j::makeLabel('POST');
 		$post->addLabels(array($label));
-		$rel = $employer->relateTo($post, 'ADDEDBY')->save();
+		$postDetails =$post->getProperties();
+		$client = new Everyman\Neo4j\Client('localhost', 7474);
+        $queryString = "MATCH (n: POST {id: '".$postDetails['id']."'}),(m:EMPLOYER {id: '".$employer['id']."'}) CREATE (m)-[r :ADDED]->n";
+        $query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
+        $result = $query->getResultSet();
 		if($post) {
 			return $post;
 		}
