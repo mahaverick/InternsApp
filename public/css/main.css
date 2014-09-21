@@ -31,6 +31,18 @@ input {
 	text-align: center;
 }
 
+.right {
+	float: right;
+}
+
+.left {
+	float: left;
+}
+
+ul {
+	list-style-type: none;
+}
+
 .clearfix { *zoom: 1; } /* For IE 6/7 */
 .clearfix:before, .clearfix:after {
 	display: table;

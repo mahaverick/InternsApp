@@ -28,6 +28,18 @@ class Internships extends Eloquent implements UserInterface, RemindableInterface
 		}
 	}
 
+	public static function getCountOfAllInternships() {
+		$client = new Everyman\Neo4j\Client('localhost', 7474);
+		$queryString = "MATCH (n: EMPLOYER)-[:ADDED]-(m :POST) RETURN count (m) as count";
+		$query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
+		$result = $query->getResultSet();
+		if ($result[0]['count']) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public static function getUploadedInternships() {
 		$eid=Session::get('eid');
 		$client = new Everyman\Neo4j\Client('localhost', 7474);
@@ -39,6 +51,19 @@ class Internships extends Eloquent implements UserInterface, RemindableInterface
 				$arr[] = $row['o']->getProperties();
 			}
 			return $arr;
+		} else {
+			return false;
+		}
+	}
+
+	public static function getCountOfUploadedInternships() {
+		$eid=Session::get('eid');
+		$client = new Everyman\Neo4j\Client('localhost', 7474);
+		$queryString = "MATCH (n: EMPLOYER {id :'".$eid."'})-[:ADDED]-(m :POST) RETURN count (m) as count";
+		$query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
+		$result = $query->getResultSet();
+		if ($result[0]['count']) {
+			return true;
 		} else {
 			return false;
 		}
@@ -70,6 +95,19 @@ class Internships extends Eloquent implements UserInterface, RemindableInterface
 				$arr[] = $row['o']->getProperties();
 			}
 			return $arr;
+		} else {
+			return false;
+		}
+	}
+
+	public static function getCountOfAppliedInternships() {
+		$sid=Session::get('sid');
+		$client = new Everyman\Neo4j\Client('localhost', 7474);
+		$queryString = "MATCH (n: POST)-[r:APPLIED]-(m:STUDENT {id: '".$sid."'}) RETURN count (n) as count";
+		$query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
+		$result = $query->getResultSet();
+		if ($result[0]['count']) {
+			return true;
 		} else {
 			return false;
 		}
@@ -123,7 +161,6 @@ class Internships extends Eloquent implements UserInterface, RemindableInterface
 		$queryString = "MATCH (s: STUDENT)-[a: APPLIED]-(n: POST {id:'".$id."'})-[r:ADDED]-(m:EMPLOYER {id: '".$eid."'}) RETURN count (s) as count";
 		$query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
 		$result = $query->getResultSet();
-		print_r($result[0]['count']);
 		if ($result[0]['count']) {
 			return true;
 		} else {

@@ -39,20 +39,21 @@ class Employers extends Eloquent implements UserInterface, RemindableInterface {
 
 	public static function checkEmployer($email, $password) {
 		$client = new Everyman\Neo4j\Client('localhost', 7474);
-		$queryString = "MATCH (n :EMPLOYER) WHERE n.email = '" . $email . "' RETURN n.id as id, n.password as password, count (n) as count";
+		$queryString = "MATCH (n :EMPLOYER) WHERE n.email = '" . $email . "' RETURN count (n) as count";
 		$query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
 		$result = $query->getResultSet();
-		$arr =$result[0];
-		if($arr['count'] != "" or $arr['count'] != null or $arr['count']==1) {
-			$id = $arr['id'];
-			$pass = $arr['password'];
+		if ($result[0]['count']) {
+			$queryString = "MATCH (n :EMPLOYER) WHERE n.email = '" . $email . "' RETURN n.id as id, n.password as password";
+			$query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
+			$arr = $query->getResultSet();
+			$id = $arr[0]['id'];
+			$pass = $arr[0]['password'];
 			if (Hash::check($password, $pass)) {
 				return $id;
 			} else {
 				return 2;
 			}
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -88,9 +89,9 @@ class Employers extends Eloquent implements UserInterface, RemindableInterface {
 		$post->addLabels(array($label));
 		$postDetails =$post->getProperties();
 		$client = new Everyman\Neo4j\Client('localhost', 7474);
-        $queryString = "MATCH (n: POST {id: '".$postDetails['id']."'}),(m:EMPLOYER {id: '".$employer['id']."'}) CREATE (m)-[r :ADDED]->n";
-        $query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
-        $result = $query->getResultSet();
+		$queryString = "MATCH (n: POST {id: '".$postDetails['id']."'}),(m:EMPLOYER {id: '".$employer['id']."'}) CREATE (m)-[r :ADDED]->n";
+		$query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
+		$result = $query->getResultSet();
 		if($post) {
 			return $post;
 		}

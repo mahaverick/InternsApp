@@ -22,15 +22,19 @@
 @stop
 
 @section('content')
-<?php $posts = Internships::getAllInternships(); ?>
+<?php $countOfPosts = Internships::getCountOfAllInternships();
+if($countOfPosts) {
+	$posts = Internships::getAllInternships(); 
+} ?>
 
 <div>
+	<?php if($countOfPosts) { ?>
 	<ul class="timeline">
 		<?php foreach ($posts as $post) { if($post){ ?>
 		<li>
 			<div class="bubble-container">
 				<div class="bubble">
-					<h3><?php echo $post['title']; ?></h3> at <h3>@<?php echo $post['company']; ?></h3> <a href="internships/<?php echo $post['id'];?>"><button>Details</button></a>
+					<h3><?php echo $post['title']; ?></h3> at <h3>@<?php echo $post['company']; ?></h3> <a href="internships/<?php echo $post['id'];?>"><button class="right">Details</button></a>
 					<h4>For the Post of <?php echo $post['forThePost']; ?> </h4> Company : <em> <?php echo $post['company']; ?> </em>
 					| more info about it: <?php echo $post['moreInfo']; ?>
 				</div>
@@ -38,5 +42,17 @@
 		</li>
 		<?php } } ?>
 	</ul>
+	<?php } else {?>
+	<ul class="timeline">
+		<li>
+			<div class="bubble-container">
+				<div class="bubble">
+					<h4 class="center">Sorry!</h4>
+					<h4 class="center">There is No Post.</h4>
+				</div>
+			</div>
+		</li>
+	</ul>
+	<?php } ?>
 </div>
 @stop

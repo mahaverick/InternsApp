@@ -5,6 +5,15 @@ Login : @parent
 @section('sidebar')
 @stop
 @section('content')
+
+<?php if($errors->any()){
+    ?>
+    <div class="center">
+        <?php echo  implode('', $errors->all('<span style="color:red">:message</span>')); ?>
+    </div>
+    <?php      
+}?>
+
 <div id="login-signup-form">
         
         <form action="signup" method="post">

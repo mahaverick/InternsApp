@@ -10,14 +10,14 @@ class EmployersController extends BaseController {
         $input = Input::all();
         $check = User::checkEmailAlreadyExist($input['email']);
         if($check) {
-            return 'Sorry!! This Email already Exist, please use different email.';
+            return Redirect::to('/employers/signup')->withErrors(array("msg" => "Sorry!! This Email already Exist, please use different email."));
         } else {
             $flag = Employers::addEmployer();
             if($flag) {
-                return 'Employer added successfully!';
+                return Redirect::to('/employers/login')->withErrors(array("msg" => "Employer added successfully! Please Login To continue."));
             }
             else {
-                return 'Employer not added successfully!';
+                return Redirect::to('/employers/signup')->withErrors(array("msg" => "Employer Not added Succesfully, please try again."));
             }
         }
     }
@@ -25,13 +25,13 @@ class EmployersController extends BaseController {
     public static function login() {
         $input = Input::all();
         $eid = Employers::checkEmployer($input['email'], $input['password']);
-        if($eid!=false && $eid!=2) {
+        if($eid && $eid!=2) {
             Session::put('eid', $eid);
-            return Redirect::to('employers');
-        } elseif($sid==2) {
-            return Redirect::to('employers/login')->withErrors(array("msg" => "Password is invalid. Please Try again."));
+            return Redirect::to('/employers');
+        } elseif($eid && $eid==2) {
+            return Redirect::to('/employers/login')->withErrors(array("msg" => "Password is invalid. Please Try again."));
         } else {
-            return Redirect::to('employers/login')->withErrors(array("msg" => "Email is invalid. Please Try again."));
+            return Redirect::to('/employers/login')->withErrors(array("msg" => "Sorry!! Employer of this email id does not exist."));
         }
     }
 
@@ -46,9 +46,9 @@ class EmployersController extends BaseController {
         $input = Input::all();
         $post = Employers::addInternship($input);
         if($post) {
-            return Redirect::to('employers')->withErrors(array("msg" => "new Internship Post added successfully!"));
+            return Redirect::to('/employers')->withErrors(array("msg" => "new Internship Post added successfully!"));
         } else {
-            return Redirect::to('employers')->withErrors(array("msg" => "we are sorry. Internship Post not added successfully!"));
+            return Redirect::to('/employers')->withErrors(array("msg" => "we are sorry. Internship Post not added successfully!"));
         }
     }
 }

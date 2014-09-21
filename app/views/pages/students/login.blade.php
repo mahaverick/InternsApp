@@ -7,11 +7,12 @@ Login : @parent
 @section('content')
 <?php if($errors->any()){
     ?>
-    <div class="widget-body list">
+    <div class="center">
         <?php echo  implode('', $errors->all('<span style="color:red">:message</span>')); ?>
     </div>
     <?php      
 }?>
+
 <div id="login-signup-form">
 
     <form action="login" method="post">

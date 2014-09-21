@@ -20,7 +20,7 @@ Login : @parent
 
         </form>
         
-        <p>Already a member? <a href="login">Sign in now</a></p>
+        <p>Already a member? <a href="/login">Sign in now</a></p>
         <p>Go back to<a href="/"> Home</a></p>
 
     </div> <!-- end login -->

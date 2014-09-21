@@ -8,31 +8,35 @@ Employers : @parent
 <link rel="stylesheet" type="text/css" href="../css/timeline.css">
 @section('header')
 <?php $details=Employers::getEmployersDetails(Session::get('eid')); ?>
-@parent | <?php echo $details['name'];?> | <a href="employers/logout">logout</a>
+@parent | <?php echo $details['name'];?> | <a href="/employers/logout">logout</a>
 @stop
 @section('sidebar')
 @stop
 @section('content')
-<div>
+<div class="center">
+	<br>
 	<a href="employers/internships"><button>add new internship</button></a>
 </div>
 
 <?php if($errors->any()){?>
-<div class="widget-body list">
+<div class="center">
 	<?php echo  implode('', $errors->all('<span style="color:red">:message</span>')); ?>
 </div>
 <?php }?>
 
-<?php $posts = Internships::getUploadedInternships(); ?>
+<?php $countOfUploadedPosts = Internships::getCountOfUploadedInternships();
+if($countOfUploadedPosts) {
+	$posts = Internships::getUploadedInternships(); 
+} ?>
 
 <div>
-
+<?php if($countOfUploadedPosts){ ?>
 	<ul class="timeline">
 		<?php foreach ($posts as $post) { if($post){ ?>
 		<li>
 			<div class="bubble-container">
 				<div class="bubble">
-					<h3><?php echo $post['title']; ?></h3> Added by <h3>@you</h3> <a href="internships/<?php echo $post['id'];?>"><button>view</button></a>
+					<h3><?php echo $post['title']; ?></h3> Added by <h3>@you</h3> <a href="internships/<?php echo $post['id'];?>"><button class="right">Details</button></a>
 					<h4>For the Post of <?php echo $post['forThePost']; ?> </h4> Company : <em> <?php echo $post['company']; ?> </em>
 					| more info about it: <?php echo $post['moreInfo']; ?>
 				</div>
@@ -40,8 +44,18 @@ Employers : @parent
 		</li>
 		<?php } } ?>
 	</ul>
-
+<?php } else {?>
+	<ul class="timeline">
+		<li>
+			<div class="bubble-container">
+				<div class="bubble">
+					<h4 class="center">Sorry!</h4>
+					<h4 class="center">You have not uploaded any Post.</h4>
+				</div>
+			</div>
+		</li>
+	</ul>
+<?php } ?>
 </div>
-
 
 @stop

@@ -11,7 +11,7 @@
 		$appliedStudents = Internships::getStudentsAppliedToInternship($id);
 	}
 	$buttonValue = "";
-	$tempText = '| <a href="/employers">'.$details['name'].'</a> | <a href="employers/logout">Logout</a>';
+	$tempText = '| <a href="/employers">'.$details['name'].'</a> | <a href="/employers/logout">Logout</a>';
 } elseif(Session::has('sid')) {
 	$details=Students::getStudentsDetails(Session::get('sid'));
 	$appliedPost = Internships::getSingleAppliedInternship($id);
@@ -21,10 +21,10 @@
 	else {
 		$buttonValue = '<input type="submit" value="Apply">';
 	}
-	$tempText = '| <a href="/students">'.$details['name'].'</a> | <a href="students/logout">Logout</a>';
+	$tempText = '| <a href="/students">'.$details['name'].'</a> | <a href="/students/logout">Logout</a>';
 } else {
 	$buttonValue = "";
-	$tempText = '| <a href="/students/login">Student Login</a> | <a href="employers/login">Employer Login</a>';
+	$tempText = '| <a href="/students/login">Student Login</a> | <a href="/employers/login">Employer Login</a>';
 } ?>
 @parent <?php echo $tempText;?>
 @stop
