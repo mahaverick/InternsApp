@@ -16,8 +16,25 @@ Route::get('/', function() {
 |--------------------------------------------------------------------------
 */
 
-Route::group(array('prefix' => 'students', 'before' => 'authCheckStudents'), function() {
+Route::filter('authCheckStudents', function() {
+	if (Session::has('sid')) {}
+	elseif (Session::has('eid')) {
+		return Redirect::to('employers');
+	}
+	else {
+		return Redirect::to('/');
+	}
+});
 
+Route::filter('alreadyLoggedIn', function(){
+	if(Session::has('sid')) {
+		return Redirect::to('students');
+	} elseif(Session::has('eid')) {
+		return Redirect::to('employers');
+	} else {}
+});
+
+Route::group(array('prefix' => '/students', 'before' => 'alreadyLoggedIn'), function() {
 	Route::get('login', function() {
 		return View::make('pages.students.login');
 	});
@@ -29,6 +46,16 @@ Route::group(array('prefix' => 'students', 'before' => 'authCheckStudents'), fun
 	});
 
 	Route::post('signup', 'StudentsController@signup');
+
+});
+
+Route::group(array('prefix' => '/students', 'before' => 'authCheckStudents'), function() {
+
+	Route::get('logout', 'StudentsController@logout');
+
+	Route::get('', function() {
+		return View::make('pages.students.students');
+	});
 });
 
 /*
@@ -37,8 +64,17 @@ Route::group(array('prefix' => 'students', 'before' => 'authCheckStudents'), fun
 |--------------------------------------------------------------------------
 */
 
-Route::group(array('prefix' => 'employers', 'before' => 'authCheckEmployers'), function() {
+Route::filter('authCheckEmployers', function() {
+	if (Session::has('eid')) {}
+	elseif (Session::has('sid')) {
+		return Redirect::to('students');
+	}
+	else {
+		return Redirect::to('/');
+	}
+});
 
+Route::group(array('prefix' => '/employers', 'before' => 'alreadyLoggedIn'), function() {
 	Route::get('login', function() {
 		return View::make('pages.employers.login');
 	});
@@ -50,4 +86,25 @@ Route::group(array('prefix' => 'employers', 'before' => 'authCheckEmployers'), f
 	});
 
 	Route::post('signup', 'EmployersController@signup');
+});
+
+Route::group(array('prefix' => '/employers', 'before' => 'authCheckEmployers'), function() {
+
+	Route::filter('employerAlreadyLoggedIn', function(){
+		if(Session::has('eid')) {
+			return Redirect::to('employers');
+		}
+	});
+
+	Route::get('logout', 'EmployersController@logout');
+
+	Route::get('', function() {
+		return View::make('pages.employers.employers');
+	});
+
+	Route::get('internships', function () {
+		return View::make('pages.employers.internships');
+	});
+	
+	Route::post('internships', 'EmployersController@addInternship');
 });

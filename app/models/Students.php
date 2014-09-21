@@ -43,8 +43,8 @@ class Students extends Eloquent implements UserInterface, RemindableInterface {
 		$result = $query->getResultSet();
 		$arr =$result[0];
 		if($arr['count'] != "" or $arr['count'] != null or $arr['count']==1) {
-			$id = $result[0]['id'];
-			$pass = $result[0]['password'];
+			$id = $arr['id'];
+			$pass = $arr['password'];
 			if (Hash::check($password, $pass)) {
 				return $id;
 			} else {
@@ -55,4 +55,19 @@ class Students extends Eloquent implements UserInterface, RemindableInterface {
 			return false;
 		}
 	}
+
+	public static function getStudentsDetails($sid) {
+		$client = new Everyman\Neo4j\Client('localhost', 7474);
+        $queryString = "MATCH (n :STUDENT) WHERE n.id = '" . $sid . "' RETURN n";
+        $query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
+        $result = $query->getResultSet();
+        $arr = array();
+		if ($result->count()) {
+			$arr = $result[0]['n']->getProperties();
+			return $arr;
+		} else {
+			return false;
+		}
+	}
+
 }

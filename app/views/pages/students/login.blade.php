@@ -27,6 +27,5 @@ Login : @parent
 
     <p>Not a member? <a href="signup">Sign up now</a></p>
     <p>Go back to<a href="/"> Home</a></p>
-
 </div>
 @stop
